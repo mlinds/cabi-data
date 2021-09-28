@@ -134,3 +134,7 @@ cache/879682e58041836d33598085fb4366c365c9ebc9.json
 *.geoJSON
 *.geojson
 outputs/edges_uni.geojson
+altair_test.ipynb
+altair_viz.ipynb
+viz.ipynb
+viz.ipynb
