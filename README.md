@@ -1,2 +1,2 @@
 # cabi-data
- Plan to download all the cabi trip data, visualize it in an interactive format
+ A few functions to parse the rich data available from Washington DC's Capital Bikshare, plus some notebooks to visualize it. 
