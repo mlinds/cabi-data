@@ -8,7 +8,7 @@ FROM mambaorg/micromamba:latest
 # is in a group with the same name (in this case jovyan).  So we must first make that so.
 #COPY library-scripts/common-debian.sh /tmp/library-scripts/
 #USER root
-RUN micromamba install -y -n base -c conda-forge python jupyterlab pandas geopandas altair && micromamba clean --all --yes
+RUN micromamba install -y -n base -c conda-forge python jupyterlab pandas geopandas altair jsonschema=3.2 && micromamba clean --all --yes
 
 # [Optional] If your pip requirements rarely change, uncomment this section to add them to the image.
 # COPY requirements.txt /tmp/pip-tmp/
