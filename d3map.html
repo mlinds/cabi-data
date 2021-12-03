@@ -22,7 +22,7 @@
 
 <body>
   <script>
-    d3.csv("data/connections_csv.csv", function (data) {
+    d3.csv("https://mlinds.github.io/cabi-data/data/connections_csv.csv", function (data) {
       for (var i = 0; i < data.length; i++) {
         console.log(data[i].st);
         console.log(data[i].en);
