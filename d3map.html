@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>D3.js</title>
+  <style>
+    .container {
+      width: 250px;
+      height: 200px;
+      border: 1px solid #720570;
+    }
+
+    .bar {
+      fill: #720570;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+
+</head>
+
+<body>
+  <script>
+    d3.csv("data/connections_csv.csv", function (data) {
+      for (var i = 0; i < data.length; i++) {
+        console.log(data[i].st);
+        console.log(data[i].en);
+      }
+    })
+  </script>
+</body>
+
+</html>
