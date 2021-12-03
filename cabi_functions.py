@@ -75,9 +75,6 @@ def read_and_save_trips():
     data.to_hdf('outputs/trips.h5',key='trips',mode='w',format='fixed',complevel=5)
     return None
 
-# may want this behavior later?
-#if __name__ == "__main__":
-#    read_and_save()
 
 def load_stations():
     """
@@ -91,14 +88,6 @@ def load_stations():
     geometry = [Point(xy) for xy in zip(stations.lat,stations.lon)]
     return gpd.GeoDataFrame(stations,crs="EPSG:4326", geometry=geometry)
 
-""" def load_stations():
-    df = pd.read_json('https://gbfs.capitalbikeshare.com/gbfs/en/station_information.json')
-    datalist = df.iloc[0,0]
-    df = pd.DataFrame(datalist)
-    df.rename({'short_name':'NAME'},inplace=True)
-    stations = df.loc[:,['lon','lat','short_name']]
-    geometry = [Point(xy) for xy in zip(stations.lat,stations.lon)]
-    return gpd.GeoDataFrame(stations,crs="EPSG:4326", geometry=geometry)   """
 
 a = pd.DataFrame(load_stations())
 
