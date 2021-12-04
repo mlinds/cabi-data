@@ -33,7 +33,8 @@
 		"ms-python.python",
 		"ms-toolsai.jupyter",
 		"ms-toolsai.jupyter-keymap",
-		"randomfractalsinc.vscode-vega-viewer"
+		"randomfractalsinc.vscode-vega-viewer",
+		"vscode.git"
 	],
 
 }
