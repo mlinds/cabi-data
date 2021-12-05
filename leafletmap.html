@@ -39,7 +39,7 @@
         <![endif]-->
     <div id="map"></div>
     <script>
-        var map = L.map('map').setView([38.87, -77], 10);
+        var map = L.map('map').setView([38.9, -77], 11);
         var Stamen_TonerBackground = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-background/{z}/{x}/{y}{r}.{ext}', {
             attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
             subdomains: 'abcd',
@@ -14453,12 +14453,12 @@
                     "from": { "data": "data_0" },
                     "encode": {
                         "update": {
-                            "opacity": { "value": 0.7 },
-                            "fill": { "value": "#4c78a8" },
+                            "opacity": { "value": 1 },
+                            "fill": { "value": "#ff0000" },
                             "tooltip": { "signal": "{\"name\": ''+datum[\"name\"]}" },
                             "x": { "field": "layer_2_x" },
                             "y": { "field": "layer_2_y" },
-                            "shape": { "value": "circle" }
+                            "shape": { "value": "square" }
                         }
                     }
                 },
@@ -14489,14 +14489,14 @@
             "scales": [
                 {
                     "name": "color",
-                    "type": "quantile",
+                    "type": "symlog",
                     "domain": { "data": "source_0", "field": "popularity" },
                     "range": { "scheme": "inferno" },
                     "interpolate": "hcl"
                 },
                 {
                     "name": "strokeWidth",
-                    "type": "quantile",
+                    "type": "symlog",
                     "domain": { "data": "source_0", "field": "popularity" },
                     "range": [1, 4]
                 }
