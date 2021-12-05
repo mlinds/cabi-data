@@ -12,18 +12,25 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="">
+    <!-- Import leaflet CSS-->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
         integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
         crossorigin="" />
+
+    <!-- Import leaflet javascript -->
     <!-- Make sure you put this AFTER Leaflet's CSS -->
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
         integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
         crossorigin=""></script>
 
+    <!-- import Vega -->
     <script src="https://unpkg.com/vega@5.21.0/build/vega.js"></script>
+    <!-- import regenerator -->
     <script src="https://unpkg.com/regenerator-runtime@0.11.1/runtime.js"></script>
-    <!-- <script src="https://unpkg.com/vega-lite@5.2.0/build/vega-lite.min.js"></script> -->
+    <!-- import leaflet vega -->
     <script src="https://cdn.jsdelivr.net/npm/leaflet-vega@0.8.6/dist/bundle.js" crossorigin=""></script>
+
+    <!-- create stylesheet for the map -->
     <style>
         #map {
             height: 98vh;
@@ -39,7 +46,9 @@
         <![endif]-->
     <div id="map"></div>
     <script>
+        // initialize map
         var map = L.map('map').setView([38.9, -77], 11);
+        // store stamen toner basemap as a layer
         var basemap = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.{ext}', {
             attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
             subdomains: 'abcd',
@@ -47,10 +56,12 @@
             maxZoom: 20,
             ext: 'png'
         });
-        var WaymarkedTrails_cycling = L.tileLayer('https://tile.waymarkedtrails.org/cycling/{z}/{x}/{y}.png', {
+        // initialize cycle trails tile server
+        var cycle_trails_layer = L.tileLayer('https://tile.waymarkedtrails.org/cycling/{z}/{x}/{y}.png', {
             maxZoom: 18,
             attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Map style: &copy; <a href="https://waymarkedtrails.org">waymarkedtrails.org</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
         });
+
         var vegaspec = {
             "$schema": "https://vega.github.io/schema/vega/v5.json",
             //"background": "white",
@@ -14526,14 +14537,13 @@
             delayRepaint: false,
 
         });
+
+        // add layers to map
         map.addLayer(vegalayer)
             .addLayer(basemap);
-        L.control.layers().setPosition('bottomright').addOverlay(WaymarkedTrails_cycling, "Cycle Trails").addTo(map);
 
-        window.VEGA_DEBUG = {
-            vegaspec,
-            view: vegalayer._view
-        };
+        // add layer control
+        L.control.layers().setPosition('bottomright').addOverlay(cycle_trails_layer, "Cycle Trails").addTo(map);
     </script>
 </body>
 
