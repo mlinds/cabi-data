@@ -26,7 +26,7 @@
     <script src="https://cdn.jsdelivr.net/npm/leaflet-vega@0.8.6/dist/bundle.js" crossorigin=""></script>
     <style>
         #map {
-            height: 1000px;
+            height: 100vh;
         }
     </style>
 
@@ -50,7 +50,7 @@
         var vegaspec = {
             "$schema": "https://vega.github.io/schema/vega/v5.json",
             //"background": "white",
-            "padding": 5,
+            "padding": 0,
             "style": "cell",
             "data": [
                 { "name": "selector002_store" },
@@ -14507,13 +14507,17 @@
                     "labelOverlap": "greedy",
                     "symbolType": "stroke",
                     "title": "popularity",
-                    "strokeWidth": "strokeWidth"
+                    "strokeWidth": "strokeWidth",
+                    "padding":12,
+                    "orient":"top-right",
+                    "fillColor":"white"
+
                 }
             ]
         };
         var vegalayer = L.vega(vegaspec, {
             // Make sure the legend stays in place when moving (slower)
-            delayRepaint: true,
+            delayRepaint: false,
 
         });
         map.addLayer(Stamen_TonerBackground)
