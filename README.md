@@ -4,10 +4,7 @@
 
 ## Interactive popularity map
 
- The [Interactive leaflet map](https://mlinds.github.io/cabi-data/leafletmap.html)
-
-## Interactive popularity map
- [Zoomable, interactive map](https://mlinds.github.io/cabi-data/leafletmap.html)
+[Interactive leaflet map](https://mlinds.github.io/cabi-data/leafletmap.html)
 
 ## Credits
 
