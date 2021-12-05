@@ -62,6 +62,7 @@
             attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Map style: &copy; <a href="https://waymarkedtrails.org">waymarkedtrails.org</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
         });
 
+        // define vega graph spec
         var vegaspec = {
             "$schema": "https://vega.github.io/schema/vega/v5.json",
             //"background": "white",
@@ -14532,6 +14533,8 @@
                 }
             ]
         };
+        
+        // create tile layerof vega spec
         var vegalayer = L.vega(vegaspec, {
             // Make sure the legend stays in place when moving (slower)
             delayRepaint: false,
