@@ -26,7 +26,7 @@
     <script src="https://cdn.jsdelivr.net/npm/leaflet-vega@0.8.6/dist/bundle.js" crossorigin=""></script>
     <style>
         #map {
-            height: 100vh;
+            height: 98vh;
         }
     </style>
 
@@ -14510,11 +14510,12 @@
                     "stroke": "color",
                     "labelOverlap": "greedy",
                     "symbolType": "stroke",
-                    "title": "popularity",
+                    "title": "Popularity (Number of Trips)",
                     "strokeWidth": "strokeWidth",
                     "padding": 12,
                     "orient": "top-right",
-                    "fillColor": "white"
+                    "fillColor": "white",
+                    "tickCount": 10
 
                 }
             ]
@@ -14527,8 +14528,6 @@
         map.addLayer(vegalayer)
             .addLayer(basemap);
         L.control.layers().setPosition('bottomright').addOverlay(WaymarkedTrails_cycling, "Cycle Trails").addTo(map);
-
-        //.addLayer(WaymarkedTrails_cycling);
 
         window.VEGA_DEBUG = {
             vegaspec,
