@@ -3,10 +3,12 @@ from os import listdir
 import geopandas as gpd
 import numpy as np
 import pandas as pd
+from pandas.core.dtypes import dtypes
 from shapely.geometry import LineString, Point
 
 
 def _load_files(filenames: list):
+    chunksize = 1000
     # two different styles, old and new
     old_cols = [
         "Duration",
@@ -36,6 +38,16 @@ def _load_files(filenames: list):
         "member_casual",
     ]
 
+    ride_dtypes = {
+        "started_at": "str",
+        "ended_at": "str",
+        "start_station_id": "Int64",
+        "end_station_id": "Int64",
+        "member_casual": pd.CategoricalDtype(
+            ["Member", "Casual", "member", "casual", "Unknown"]
+        ),
+    }
+
     for filename in filenames:
         columns = pd.read_csv(filename, nrows=2).columns
         # determine which type of file we are reading
@@ -48,6 +60,9 @@ def _load_files(filenames: list):
                     usecols=[1, 2, 3, 5, 8],
                     header=0,
                     names=old_cols,
+                    dtype=ride_dtypes,
+                    engine="c",
+                    infer_datetime_format=True,
                 )
             except:
                 raise TypeError(f"Error encountered at {filename}")
@@ -59,6 +74,9 @@ def _load_files(filenames: list):
                     parse_dates=["started_at", "ended_at"],
                     usecols=[2, 3, 5, 7, 12],
                     names=new_cols,
+                    dtype=ride_dtypes,
+                    engine="c",
+                    infer_datetime_format=True,
                 )
             except:
                 # with so many files it helps to know which is causing issues
@@ -76,6 +94,9 @@ def return_trip_datatable(datafolder="tripdata/"):
     return pd.concat(_load_files(data_files))
 
 
+# return_trip_datatable()
+
+
 def read_and_save_trips():
     """
     Saves all the trips to a hdf5 file
@@ -86,16 +107,13 @@ def read_and_save_trips():
 
 
 def load_stations():
-    """
-    Loads all the stations from the API
-
-    returns a geodataframe of all data about the stations
-    """
     df = pd.read_json(
         "https://gbfs.capitalbikeshare.com/gbfs/en/station_information.json"
     )
-    # go two multi indexes down
-    stations = pd.DataFrame(df.iloc[0, 0]).rename({"short_name": "NAME"})
+    datalist = df.iloc[0, 0]
+    df = pd.DataFrame(datalist)
+    # df.rename({"short_name": "NAME"}, inplace=True)
+    stations = df.assign(short_name=df.short_name.astype('int'))
     geometry = [Point(xy) for xy in zip(stations.lat, stations.lon)]
     return gpd.GeoDataFrame(stations, crs="EPSG:4326", geometry=geometry)
 
@@ -111,6 +129,7 @@ def find_station_geo(stationnum):
         return (lonval, latval)
     except:
         return None
+
 
 
 def make_trip_geometry(start_station_num: int, end_station_num: int):
