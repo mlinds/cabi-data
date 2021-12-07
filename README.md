@@ -8,7 +8,7 @@
 
 ## Credits
 
-The following packages/maps/resources were used (in addition to the standard python stack):
+The following packages/maps/resources were used (in addition to the standard Python data stack):
 - [leaflet-vega](https://github.com/nyurik/leaflet-vega)
-- [The beautiful stamen Toner basemap](https://github.com/stamen/maps.stamen.com)
+- [The beautiful Stamen Toner basemap](https://github.com/stamen/maps.stamen.com)
 - [Altair](https://github.com/altair-viz/altair)
