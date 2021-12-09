@@ -1,4 +1,4 @@
-import cabi
+from cabi import cabi
 import pandas as pd 
 import numpy as np
 
