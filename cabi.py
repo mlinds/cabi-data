@@ -121,7 +121,10 @@ def load_stations():
 a = pd.DataFrame(load_stations())
 
 
-def find_station_geo(stationnum):
+def find_station_geo(stationnum: int):
+    """
+    
+    """
     matched = a[a.short_name == stationnum]
     try:
         latval = matched.lat
