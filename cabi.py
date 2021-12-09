@@ -122,9 +122,7 @@ a = pd.DataFrame(load_stations())
 
 
 def find_station_geo(stationnum: int):
-    """
-    
-    """
+    """ """
     matched = a[a.short_name == stationnum]
     try:
         latval = matched.lat
@@ -145,12 +143,19 @@ def make_trip_geometry(start_station_num: int, end_station_num: int):
 
 
 def pair_stations(start_ids, end_ids):
+    """ """
     l = []
     for x, y in zip(start_ids, end_ids):
         xs, ys = sorted([int(x), int(y)])
         l.append(int(str(xs) + str(ys)))
     return l
 
+
 def get_dist(start_id, end_id):
     geom = make_trip_geometry(start_id, end_id)
-    
+    gdf = gpd.GeoDataFrame(
+        {"start": start_id, "end": end_id}, 
+        geometry=geom, 
+        crs="EPSG:4326"
+    )
+

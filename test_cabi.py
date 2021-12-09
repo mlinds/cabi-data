@@ -14,3 +14,6 @@ def test_find_station_geo():
     lat,lon = cabi.find_station_geo(station)
     assert float(lon) == 38.858971
     assert float(lat) == -77.053230
+
+def test_get_dist():
+    distance = cabi.get_dist(31000,31003)
