@@ -33,7 +33,7 @@
     <!-- create stylesheet for the map -->
     <style>
         #map {
-            height: 98vh;
+            height: 100vh;
         }
     </style>
 
@@ -14458,7 +14458,7 @@
                             "x2": { "field": "layer_1_x2" },
                             "y": { "field": "layer_1_y" },
                             "y2": { "field": "layer_1_y2" },
-                            "opacity": { "value": 0.8 },
+                            "opacity": { "value": 1 },
                         }
                     }
                 },
@@ -14537,7 +14537,7 @@
         // create tile layerof vega spec
         var vegalayer = L.vega(vegaspec, {
             // Make sure the legend stays in place when moving (slower)
-            delayRepaint: false,
+            delayRepaint: true,
 
         });
 
