@@ -41,8 +41,8 @@ def _load_files(filenames: list):
     ride_dtypes = {
         "started_at": "str",
         "ended_at": "str",
-        "start_station_id": "Int64",
-        "end_station_id": "Int64",
+        "start_station_id": "UInt16",
+        "end_station_id": "UInt16",
         "member_casual": pd.CategoricalDtype(
             ["Member", "Casual", "member", "casual", "Unknown"]
         ),
@@ -88,13 +88,16 @@ def _load_files(filenames: list):
 def return_trip_datatable(datafolder="tripdata/"):
     """
     Returns a pandas DataFrame of all CaBi trips if you tell it where you keep your trip CSVss
+    
+    Parameters:
+    datafolder: pathlike: location of the CSVs of all the cabi trips you are interested in
     """
 
     data_files = [datafolder + filename for filename in listdir(datafolder)]
     return pd.concat(_load_files(data_files))
 
 
-# return_trip_datatable()
+
 
 
 def read_and_save_trips():
