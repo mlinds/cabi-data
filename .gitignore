@@ -141,3 +141,5 @@ viz.ipynb
 prototyping.ipynb
 dc-borders-topo.json
 dc-elevation.tif
+data/comb_trips.gzip
+notebooks/data_cleaning2.ipynb
