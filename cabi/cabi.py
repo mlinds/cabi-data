@@ -85,48 +85,48 @@ def _load_files(filenames: list):
                 )
 
 
-def return_trip_datatable(datafolder="tripdata/"):
+def return_trip_datatable(datafolder="../data/tripdata/"):
     """
-    Returns a pandas DataFrame of all CaBi trips if you tell it where you keep your trip CSVss
-    
+    Reads CSV files and returns a DataFrame of the trips.
+
     Parameters:
     datafolder: pathlike: location of the CSVs of all the cabi trips you are interested in
     """
 
     data_files = [datafolder + filename for filename in listdir(datafolder)]
-    return pd.concat(_load_files(data_files))
+    df = pd.concat(_load_files(data_files))
+    df['member_casual'] = df['member_casual'].str.lower()
+    df['member_casual'] = df['member_casual'].astype('category')
+    return df
 
 
-
-
-
-def read_and_save_trips():
+def _get_station_dataframe():
     """
-    Saves all the trips to a hdf5 file
+    Queries the public cabi GBFS api and returns a DataFrame of the stations
     """
-    data = return_trip_datatable()
-    data.to_hdf("outputs/trips.h5", key="trips", mode="w", format="fixed", complevel=5)
-    return None
-
-
-def load_stations():
+    # get a raw dataframe of the current status of the system
     df = pd.read_json(
         "https://gbfs.capitalbikeshare.com/gbfs/en/station_information.json"
     )
-    datalist = df.iloc[0, 0]
-    df = pd.DataFrame(datalist)
-    # df.rename({"short_name": "NAME"}, inplace=True)
+    df = pd.DataFrame(df.iloc[0, 0])
     stations = df.assign(short_name=df.short_name.astype("int"))
-    geometry = [Point(xy) for xy in zip(stations.lat, stations.lon)]
-    return gpd.GeoDataFrame(stations, crs="EPSG:4326", geometry=geometry)
+    return stations
 
 
-a = pd.DataFrame(load_stations())
+_stations = _get_station_dataframe()
+
+def _get_station_GeoDF():
+    
+    geometry = [Point(xy) for xy in zip(_stations.lat, _stations.lon)]
+    return gpd.GeoDataFrame(_stations, crs="EPSG:4326", geometry=geometry)
+
 
 
 def find_station_geo(stationnum: int):
-    """ """
-    matched = a[a.short_name == stationnum]
+    """
+    Accepts a station ID and returns a tuple of the latitude and longitude in WGS84
+    """
+    matched = _stations[_stations.short_name == stationnum]
     try:
         latval = matched.lat
         lonval = matched.lon
@@ -136,7 +136,9 @@ def find_station_geo(stationnum: int):
 
 
 def make_trip_geometry(start_station_num: int, end_station_num: int):
-    """ """
+    """ 
+    
+    """
     start_point = find_station_geo(start_station_num)
     end_point = find_station_geo(end_station_num)
     try:
@@ -146,19 +148,23 @@ def make_trip_geometry(start_station_num: int, end_station_num: int):
 
 
 def pair_stations(start_ids, end_ids):
-    """ """
+    """
+    Accepts two lists of integer station names, and returns a list of sorted tuples, so that the entering X,Y and Y,X return the same result
+    """
     l = []
     for x, y in zip(start_ids, end_ids):
         xs, ys = sorted([int(x), int(y)])
         l.append(int(str(xs) + str(ys)))
     return l
 
+# create geoseries of 
+_stations_state_plane = _get_station_GeoDF().to_crs(epsg=26985).set_index('short_name').geometry
+
 
 def get_dist(start_id, end_id):
-    geom = make_trip_geometry(start_id, end_id)
-    gdf = gpd.GeoDataFrame(
-        {"start": start_id, "end": end_id}, 
-        geometry=geom, 
-        crs="EPSG:4326"
-    )
+    """
+    Consider making a static lookup table to make this faster
+    """
+
+    return _stations_state_plane[start_id].distance(_stations_state_plane[end_id])
 
