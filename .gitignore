@@ -145,3 +145,4 @@ data/comb_trips.gzip
 notebooks/data_cleaning2.ipynb
 data/interim/comb_trips.gzip
 reports/figures/weekly_trips.png
+cabi/data/cache/*
