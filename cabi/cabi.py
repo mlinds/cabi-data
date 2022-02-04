@@ -3,12 +3,11 @@ from os import listdir
 import geopandas as gpd
 import numpy as np
 import pandas as pd
-from pandas.core.dtypes import dtypes
+
 from shapely.geometry import LineString, Point
 
 
 def _load_files(filenames: list):
-    chunksize = 1000
     # two different styles, old and new
     old_cols = [
         "Duration",
@@ -95,8 +94,8 @@ def return_trip_datatable(datafolder="../data/tripdata/"):
 
     data_files = [datafolder + filename for filename in listdir(datafolder)]
     df = pd.concat(_load_files(data_files))
-    df['member_casual'] = df['member_casual'].str.lower()
-    df['member_casual'] = df['member_casual'].astype('category')
+    df["member_casual"] = df["member_casual"].str.lower()
+    df["member_casual"] = df["member_casual"].astype("category")
     return df
 
 
@@ -109,17 +108,17 @@ def _get_station_dataframe():
         "https://gbfs.capitalbikeshare.com/gbfs/en/station_information.json"
     )
     df = pd.DataFrame(df.iloc[0, 0])
-    stations = df.assign(short_name=df.short_name.astype("int"))
+    stations = df.assign(short_name=df.short_name.astype("uint32"))
     return stations
 
 
 _stations = _get_station_dataframe()
 
+
 def _get_station_GeoDF():
-    
+
     geometry = [Point(xy) for xy in zip(_stations.lat, _stations.lon)]
     return gpd.GeoDataFrame(_stations, crs="EPSG:4326", geometry=geometry)
-
 
 
 def find_station_geo(stationnum: int):
@@ -136,8 +135,10 @@ def find_station_geo(stationnum: int):
 
 
 def make_trip_geometry(start_station_num: int, end_station_num: int):
-    """ 
-    
+    """
+    Takes 2 stations and returns a linestring between them. 
+
+     
     """
     start_point = find_station_geo(start_station_num)
     end_point = find_station_geo(end_station_num)
@@ -157,8 +158,11 @@ def pair_stations(start_ids, end_ids):
         l.append(int(str(xs) + str(ys)))
     return l
 
-# create geoseries of 
-_stations_state_plane = _get_station_GeoDF().to_crs(epsg=26985).set_index('short_name').geometry
+
+# create geoseries of
+_stations_state_plane = (
+    _get_station_GeoDF().to_crs(epsg=26985).set_index("short_name").geometry
+)
 
 
 def get_dist(start_id, end_id):
@@ -168,3 +172,6 @@ def get_dist(start_id, end_id):
 
     return _stations_state_plane[start_id].distance(_stations_state_plane[end_id])
 
+
+def get_triptime(starttime: np.datetime64, endtime: np.datetime64):
+    return endtime - starttime
