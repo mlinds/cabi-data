@@ -5,9 +5,11 @@ import matplotlib.pyplot as plt
 import json
 
 # %%
-nodes = pd.read_csv("../data/stationLookup.csv", usecols=["short_name", "name"])
+nodes = pd.read_csv(
+    "../data/processed/stationLookup.csv", usecols=["short_name", "name", "lat", "lon"]
+)
 
-edges = pd.read_json("../data/all_trips.json", orient="split").sort_values(
+edges = pd.read_json("../data/interim/all_trips.json", orient="split").sort_values(
     "popularity", ascending=False
 )
 
@@ -33,14 +35,15 @@ json_dict = nx.node_link_data(G)
 json_string = json.dumps(json_dict)
 
 # %%
-with open("../data/graph_json.json", "w") as gr_json_file:
+with open("../data/interim/graph_json.json", "w") as gr_json_file:
     gr_json_file.write(json_string)
 # %%
 plt.figure(figsize=(30, 30))
-cmap = plt.colormaps['magma']
+cmap = plt.colormaps()[0]
+
 nx.draw_circular(
     G,
-    # with_labels=True,
+    with_labels=True,
     edge_cmap=cmap,
     node_size=5,
     # edge_vmin=10000.0,
@@ -48,6 +51,8 @@ nx.draw_circular(
     # edge_color=edges.popularity.values,
 )
 # nx.draw_networkx()
+
+
 # %%
 nx.draw_random(G, node_size=4)
 # %%

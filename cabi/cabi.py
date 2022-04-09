@@ -6,9 +6,18 @@ import pandas as pd
 
 from shapely.geometry import LineString, Point
 
+ride_dtypes = {
+    "started_at": "str",
+    "ended_at": "str",
+    "start_station_id": "UInt16",
+    "end_station_id": "UInt16",
+    "member_casual": pd.CategoricalDtype(
+        ["Member", "Casual", "member", "casual", "Unknown"]
+    ),
+}
 
-def _load_files(filenames: list):
-    # two different styles, old and new
+
+def _load_old_style(filename):
     old_cols = [
         "Duration",
         "started_at",
@@ -21,6 +30,22 @@ def _load_files(filenames: list):
         "member_casual",
     ]
 
+    try:
+        return pd.read_csv(
+            filename,
+            parse_dates=["started_at", "ended_at"],
+            usecols=[1, 2, 3, 5, 8],
+            header=0,
+            names=old_cols,
+            dtype=ride_dtypes,
+            engine="c",
+            infer_datetime_format=True,
+        )
+    except:
+        raise TypeError(f"Error encountered at {filename}")
+
+
+def _load_new_style(filename):
     new_cols = [
         "ride_id",
         "rideable_type",
@@ -37,51 +62,35 @@ def _load_files(filenames: list):
         "member_casual",
     ]
 
-    ride_dtypes = {
-        "started_at": "str",
-        "ended_at": "str",
-        "start_station_id": "UInt16",
-        "end_station_id": "UInt16",
-        "member_casual": pd.CategoricalDtype(
-            ["Member", "Casual", "member", "casual", "Unknown"]
-        ),
-    }
+    try:
+        return pd.read_csv(
+            filename,
+            header=0,
+            parse_dates=["started_at", "ended_at"],
+            usecols=[2, 3, 5, 7, 12],
+            names=new_cols,
+            dtype=ride_dtypes,
+            engine="c",
+            infer_datetime_format=True,
+        )
+    except:
+        # with so many files it helps to know which is causing issues
+        raise TypeError(
+            f"Error encountered at {filename} - columns do not match expected pattern"
+        )
+
+
+def _load_files(filenames: list):
+    # two different styles, old and new
 
     for filename in filenames:
         columns = pd.read_csv(filename, nrows=2).columns
-        # determine which type of file we are reading
-        # TODO change to match statement
+        # determine if the csv is the old or new format
+       
         if columns[0] == "Duration":
-            try:
-                yield pd.read_csv(
-                    filename,
-                    parse_dates=["started_at", "ended_at"],
-                    usecols=[1, 2, 3, 5, 8],
-                    header=0,
-                    names=old_cols,
-                    dtype=ride_dtypes,
-                    engine="c",
-                    infer_datetime_format=True,
-                )
-            except:
-                raise TypeError(f"Error encountered at {filename}")
+          yield  _load_old_style(filename)
         elif columns[0] == "ride_id":
-            try:
-                yield pd.read_csv(
-                    filename,
-                    header=0,
-                    parse_dates=["started_at", "ended_at"],
-                    usecols=[2, 3, 5, 7, 12],
-                    names=new_cols,
-                    dtype=ride_dtypes,
-                    engine="c",
-                    infer_datetime_format=True,
-                )
-            except:
-                # with so many files it helps to know which is causing issues
-                raise TypeError(
-                    f"Error encountered at {filename} - columns do not match expected pattern"
-                )
+          yield _load_new_style(filename)
 
 
 def return_trip_datatable(datafolder="../data/tripdata/"):
@@ -127,8 +136,8 @@ def find_station_geo(stationnum: int):
     """
     matched = _stations[_stations.short_name == stationnum]
     try:
-        latval = matched.lat
-        lonval = matched.lon
+        latval = float(matched.lat.values)
+        lonval = float(matched.lon.values)
         return (lonval, latval)
     except:
         return None
@@ -136,9 +145,9 @@ def find_station_geo(stationnum: int):
 
 def make_trip_geometry(start_station_num: int, end_station_num: int):
     """
-    Takes 2 stations and returns a linestring between them. 
+    Takes 2 stations and returns a linestring between them.
 
-     
+
     """
     start_point = find_station_geo(start_station_num)
     end_point = find_station_geo(end_station_num)
