@@ -10,6 +10,8 @@
 
 [Interactive 3D View of March 2022 trips](https://mlinds.github.io/cabi-data/reports/march_arcs.html)
 
+This shows only the most popular 10% of individual station pairs.
+
 ## Credits
 
 The following packages/maps/resources were used (in addition to the standard Python data stack):

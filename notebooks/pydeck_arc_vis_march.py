@@ -54,7 +54,7 @@ view_state = pdk.ViewState(
 )
 
 
-TOOLTIP_TEXT = {"html": "{popularity} Trips in March 2022"}
+TOOLTIP_TEXT = {"html": "{popularity} Trips in March 2022 <br /> Orange is origin, green is destination"}
 r = pdk.Deck(arc_layer, initial_view_state=view_state, tooltip=TOOLTIP_TEXT)
 r.to_html("../reports/march_arcs.html")
 # %%
