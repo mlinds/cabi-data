@@ -25,7 +25,7 @@ df = df.merge(stations, left_on="start_station_id", right_on="short_name",).merg
     suffixes=("_st", "_en"),
 )
 
-df = df[df.popularity > df.popularity.quantile(0.9)]
+df = df.sort_values('popularity',ascending=False)[:500]
 # %%
 GREEN_RGB = [0, 255, 0, 40]
 RED_RGB = [240, 100, 0, 40]
@@ -50,11 +50,11 @@ view_state = pdk.ViewState(
     longitude=-77.028874,
     bearing=0,
     pitch=50,
-    zoom=10,
+    zoom=12,
 )
 
 
-TOOLTIP_TEXT = {"html": "{popularity} Trips in March 2022 <br /> Orange is origin, green is destination"}
+TOOLTIP_TEXT = {"html": "{name_st} to {name_en}<br />{popularity} Trips in March 2022 <br /> Orange is origin, green is destination"}
 r = pdk.Deck(arc_layer, initial_view_state=view_state, tooltip=TOOLTIP_TEXT)
 r.to_html("../reports/march_arcs.html")
 # %%
