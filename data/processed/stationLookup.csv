@@ -1,10 +1,13 @@
 short_name,name,lat,lon
 31000,Eads St & 15th St S,38.858971,-77.05323
+31001,18th & Eads St,38.85748133133024, -77.05307516944863
 31002,Crystal Dr & 20th St S,38.856425,-77.049232
 31003,Crystal Dr & 15th St S,38.861056,-77.049417
 31004,Aurora Hills Cmty Ctr / 18th St & S Hayes St,38.857866,-77.05949
 31005,Pentagon City Metro / 12th St & S Hayes St,38.862303,-77.059936
 31006,Army Navy Dr & S Joyce St,38.86331354301248,-77.06341624259947
+31007, 
+31008, 12th & Army Navy Dr, 38.862893536849796, -77.05256615073914
 31009,Crystal Dr & 27th St S,38.848466,-77.051514
 31010,S Glebe Rd & Potomac Ave,38.8426,-77.0502
 31011,Crystal Dr & 23rd St S,38.852929,-77.049723
@@ -59,6 +62,7 @@ short_name,name,lat,lon
 31608,8th & Eye St SE / Barracks Row,38.8792,-76.9953
 31301,Ward Circle / American University,38.938736,-77.087171
 31302,Wisconsin Ave & Newark St NW,38.934881,-77.072755
+31329,White House, 38.89573441620246, -77.03516159702072
 31402,14th St Heights / 14th & Crittenden St NW,38.947774,-77.032818
 31804,Anacostia Library,38.865784,-76.9784
 31805,Pennsylvania & Minnesota Ave SE,38.873057,-76.971015
@@ -142,6 +146,7 @@ short_name,name,lat,lon
 31707,Benning Rd & East Capitol St NE / Benning Rd Metro,38.889935,-76.93723
 31307,3000 Connecticut Ave NW / National Zoo,38.930282,-77.055599
 31708,Anacostia Ave & Benning Rd NE / River Terrace ,38.896544,-76.96012
+31709, 34th St & Minnesota Ave SE, 38.88376108708415, -76.9575278760837
 31246,M St & Pennsylvania Ave NW,38.905126,-77.056887
 31626,15th St & Massachusetts Ave SE,38.88732,-76.983569
 31806,Congress Heights Metro,38.844711,-76.987823
@@ -258,6 +263,7 @@ short_name,name,lat,lon
 32012,Silver Spring Metro / Colesville Rd & Wayne Ave,38.995256441231696,-77.02912420034409
 32013,Montgomery & East Ln,38.983525,-77.095367
 32014,Friendship Hts Metro / Wisconsin Ave & Wisconsin Cir,38.961763,-77.085998
+32015,Crabbs Branch Way & Redland Rd, 39.12101862840929, -77.15880982291073
 31119,14th & Belmont St NW,38.921074,-77.031887
 31634,3rd & Tingey St SE,38.87501,-77.0024
 31120,10th & Florida Ave NW,38.920387,-77.025672
@@ -266,6 +272,7 @@ short_name,name,lat,lon
 32017,Monroe St & Monroe Pl,39.083673,-77.149162
 32018,Needwood Rd & Eagles Head Ct,39.123513,-77.15741
 32019,East West Hwy & Blair Mill Rd,38.990249,-77.02935
+32020,Crabbs Branch Way & Calhoun Pl,39.107709,-77.152072
 32021,47th & Elm St,38.982456,-77.091991
 32022,Dennis Ave & Amherst Ave,39.02538719623632,-77.04456299543381
 32023,Montgomery College / W Campus Dr & Mannakee St,39.095661,-77.159048
@@ -275,6 +282,8 @@ short_name,name,lat,lon
 32027,Battery Ln & Trolley Trail,38.992375,-77.100104
 32028,Norfolk & Rugby Ave,38.990639,-77.100239
 32029,Offutt Ln & Chevy Chase Dr,38.977092999999996,-77.094589
+32030,Broschart & Blackwell Rd,39.102099,-77.200322
+32031,Rockville Metro West, 39.084496667602004, -77.14697391567552
 32032,Fleet St & Ritchie Pkwy,39.076331,-77.141378
 32033,Piccard & W Gude Dr,39.102212,-77.177091
 32034,Silver Spring Transit Center - Top Level,38.99403485060837,-77.03037142753601
@@ -400,6 +409,7 @@ short_name,name,lat,lon
 31812,16th & Q St SE / Anacostia HS,38.870695,-76.982359
 32200,Spring Hill Metro,38.929261,-77.240654
 32201,Westpark Dr & Leesburg Pike,38.92403,-77.235955
+32202,Solutions Dr. & Greensboro Dr,38.923134010270516, -77.23066519127526
 32203,Tysons One Pl & Chain Bridge Rd,38.919475,-77.221179
 32204,Tysons Corner Station,38.920939,-77.222115
 32205,Westpark & Jones Branch Dr,38.924437,-77.217664
@@ -451,6 +461,7 @@ short_name,name,lat,lon
 31920,Washington-Liberty High School / N Stafford St & Generals Way,38.888282,-77.111066
 31921,Westover Library / Washington Blvd & N McKinley Rd,38.886048,-77.142317
 31923,Columbia Pike & George Mason Dr,38.859305619982344,-77.10201859474182
+31925,Crystal Dr & Potomac Ave,38.84829304357825, -77.05119105703747
 32068,Columbus Ave & Tribeca St,39.12582811177034,-77.16705948114395
 32069,Columbus Ave & Gramercy Blvd,39.12333,-77.16486
 32225,Reston Pkwy & Spectrum Dr,38.964207741006206,-77.35428035259247
@@ -489,6 +500,7 @@ short_name,name,lat,lon
 32080,Fishers Ln & Rock Creek Mill Rd,39.0629,-77.113454
 32081,Congressional Ln & E Jefferson St,39.06219,-77.129235
 32082,Garland Ave & Walden Rd,39.00048,-77.00077
+32083,Rockville Pike & Meeting St,39.050539,-77.115212
 32227,Greensboro & Pinnacle Dr,38.92245,-77.23034
 32400,1301 McCormick Dr / Wayne K. Curry Admin Bldg,38.908391,-76.843263
 32401,Largo Town Center Metro,38.899811,-76.844604
@@ -651,3 +663,7 @@ short_name,name,lat,lon
 31952,N Howard St & N Imboden St,38.818509,-77.105564
 32255,Hartland Rd & Harte Pl,38.878601,-77.222808
 32256,North Village and Park Garden,38.983199,-77.341823
+32900,Motivate BX Tech Office, 38.964406,-77.010759
+32901,6035 Warehouse,38.96381,-77.010266
+32902,Motivate Office, 38.963632551740446,-77.01025485992432 
+32906,Warehouse Test Station,38.963632551740446,-77.01025485992432  
