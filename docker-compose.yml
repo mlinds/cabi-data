@@ -1,0 +1,45 @@
+version: '3.8'
+services:
+  db:
+    container_name: postgres_container
+    image: pgrouting/pgrouting
+    restart: always
+    environment:
+      POSTGRES_DB: pgrouting_data
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: maxpass
+      PGDATA: /var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  pgadmin:
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4:5.5
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: maxpass
+      PGADMIN_LISTEN_PORT: 80
+    ports:
+      - "8080:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+  valhalla:
+    container_name: valhalla_routing_container
+    image: gisops/valhalla:latest
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./data/osm_data/:/custom_files
+    environment:
+      - max_x=-76.79742
+      - min_y=38.76640
+      - min_x=-77.43373
+      - max_y=39.14923
+      - build_elevation=True
+      - use_tiles_ignore_pbf=True
+volumes:
+  db-data:
+  pgadmin-data:
