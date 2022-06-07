@@ -1,3 +1,6 @@
+    """Just seeing of loading the CSVs with numpy is any faster
+
+    """
 # %%
 import numpy as np
 import pandas as pd
