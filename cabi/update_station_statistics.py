@@ -1,5 +1,5 @@
 # %%
-import cabi
+import trip_io
 import pandas as pd
 import numpy as np
 
@@ -8,14 +8,14 @@ import numpy as np
 # first, get the dataframe of all trips, and the current info on the stations
 
 
-def _find_unique_stations(trips_df):
+def find_unique_stations(trips_df):
     trips_df = trips_df.dropna()
     start_station_array = trips_df.start_station_id.unique()
     end_station_array = trips_df.end_station_id.unique()
     return np.unique(np.hstack([start_station_array, end_station_array]))
 
 
-def _get_popularity(trips_df):
+def get_popularity(trips_df):
     starts = (
         trips_df[["start_station_id", "end_station_id"]]
         .groupby("start_station_id")
@@ -52,21 +52,21 @@ def _get_popularity(trips_df):
 
 
 def update_table():
-    trips_df = cabi.read_stored_trips()
+    trips_df = trip_io.read_stored_trips()
     current_station_data = pd.read_csv(
         "../data/processed/stationLookup.csv", usecols=[0, 1, 2, 3]
     )
     # check that there are not any trips to stations we don't know about
-    all_unique_stations = _find_unique_stations(trips_df)
+    all_unique_stations = find_unique_stations(trips_df)
 
     # TODO find a way to see if there are any trips here that aren't in station data table
-    popularity = _get_popularity(trips_df)
+    popularity = get_popularity(trips_df)
     merged_df = current_station_data.merge(
         popularity, how="left", left_on="short_name", right_on="station", validate="1:1"
     )
 
     merged_df.to_csv("../data/processed/stationLookup.csv", index=False)
 
-
-update_table()
 # %%
+if __name__ == '__main__':
+    update_table()

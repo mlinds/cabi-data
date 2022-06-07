@@ -1,5 +1,3 @@
-# %%
-import cabi
 import pandas as pd
 
 def calculate_popularity():
