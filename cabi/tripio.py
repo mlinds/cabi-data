@@ -5,7 +5,6 @@ import geopandas as gpd
 import numpy as np
 import pandas as pd
 
-from numba import jit
 from shapely.geometry import LineString, Point
 
 ride_dtypes = {
@@ -153,35 +152,9 @@ def make_trip_geometry(start_station_num: int, end_station_num: int):
     except:
         return pd.NA
 
-
-def pair_stations(start_ids, end_ids):
-    """
-    Accepts two lists of integer station names, and returns a list of sorted tuples, so that the entering X,Y and Y,X return the same result
-    """
-    l = []
-    for x, y in zip(start_ids, end_ids):
-        xs, ys = sorted([int(x), int(y)])
-        l.append(int(str(xs) + str(ys)))
-    return l
-
-
-# create geoseries of
 _stations_state_plane = (
     _get_station_GeoDF().to_crs(epsg=26985).set_index("short_name").geometry
 )
-
-
-def get_dist(start_id, end_id):
-    """
-    Consider making a static lookup table to make this faster
-    """
-
-    return _stations_state_plane[start_id].distance(_stations_state_plane[end_id])
-
-
-def get_triptime(starttime: np.datetime64, endtime: np.datetime64):
-    return endtime - starttime
-
 
 def saves_to_parquet(path, df):
     df = return_trip_datatable()
@@ -190,77 +163,3 @@ def saves_to_parquet(path, df):
 
 def read_stored_trips(path="../data/interim/comb_trips.gzip"):
     return pd.read_parquet(path)
-
-
-@jit
-def _sort_stations(st:int, end:int)->int:
-    a, b = sorted([st, end])
-    return int(str(a) + str(b))
-
-
-@jit
-def _sort_stations_dataframe(starray:np.ndarray, endarray:np.ndarray, ind:int)->int:
-    st = starray[ind]
-    end = endarray[ind]
-    return _sort_stations(st, end)
-
-
-@jit
-def _generat_st_end_lists(indicies):
-    stlist = [int(str(item)[0:5]) for item in indicies]
-    endlist = [int(str(item)[5:10]) for item in indicies]
-    return stlist, endlist
-
-
-def create_popularity_table(df):
-    # remove trips with missing data
-    total = len(df)
-    df = df.dropna()
-    total_nonna = len(df)
-    print(
-        f"{total_nonna} after removing trips with NA values \n {total-total_nonna} trips removed due to NA values"
-    )
-    # remove self-trips (starting and ending at same station)
-
-    df = df[df.start_station_id != df.end_station_id]
-    total_nonself = len(df)
-    print(
-        f"{total_nonself} trips starting and ending at the same station \n {total_nonna-total_nonself} trips were removed"
-    )
-
-    # remove trips with an invald start or end
-
-    df = df[df.start_station_id > 0]
-    df = df[df.end_station_id > 0]
-    total_mappable = len(df)
-    print(
-        f"{total_mappable} trips after removing trips with missing origin or destination \n {total_nonna-total_mappable} trips removed"
-    )
-
-    # load the stations
-    cabi_stations = "../data/processed/stationLookup.csv"
-    station_names_list = list(pd.read_csv(cabi_stations).short_name)
-
-    sample_df = df[["start_station_id", "end_station_id"]].reset_index()
-    stidlist = sample_df.start_station_id.to_numpy()
-    endidlist = sample_df.end_station_id.to_numpy()
-
-    sorter = lambda i: _sort_stations_dataframe(stidlist, endidlist, i)
-
-    popularity = sample_df.groupby(by=sorter).count()
-    new_pop = popularity.start_station_id
-    indicies = pd.DataFrame(new_pop).index.to_numpy()
-
-    stlist, endlist = _generat_st_end_lists(indicies)
-
-    pop_df = (
-        pd.DataFrame(new_pop)
-        .assign(st=stlist, en=endlist)
-        .reset_index(drop=True)
-        .rename(columns={"start_station_id": "popularity"})[["st", "en", "popularity"]]
-    )
-    pop_df.to_csv(
-        "../data/processed/connections_csv.csv",
-        columns=["st", "en", "popularity"],
-        index=False,
-    )
