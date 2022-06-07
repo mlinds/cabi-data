@@ -1,9 +1,11 @@
 from os import listdir
+from multiprocessing import Pool
 
 import geopandas as gpd
 import numpy as np
 import pandas as pd
 
+from numba import jit
 from shapely.geometry import LineString, Point
 
 ride_dtypes = {
@@ -86,11 +88,11 @@ def _load_files(filenames: list):
     for filename in filenames:
         columns = pd.read_csv(filename, nrows=2).columns
         # determine if the csv is the old or new format
-       
+
         if columns[0] == "Duration":
-          yield  _load_old_style(filename)
+            yield _load_old_style(filename)
         elif columns[0] == "ride_id":
-          yield _load_new_style(filename)
+            yield _load_new_style(filename)
 
 
 def return_trip_datatable(datafolder="../data/tripdata/"):
@@ -107,16 +109,12 @@ def return_trip_datatable(datafolder="../data/tripdata/"):
     df["member_casual"] = df["member_casual"].astype("category")
     return df
 
-
 def _get_station_dataframe():
     """
     Queries the public cabi GBFS api and returns a DataFrame of the stations
     """
     # get a raw dataframe of the current status of the system
-    df = pd.read_json(
-        "https://gbfs.capitalbikeshare.com/gbfs/en/station_information.json"
-    )
-    df = pd.DataFrame(df.iloc[0, 0])
+    df = pd.read_csv("../data/processed/stationLookup.csv")
     stations = df.assign(short_name=df.short_name.astype("uint32"))
     return stations
 
@@ -125,8 +123,7 @@ _stations = _get_station_dataframe()
 
 
 def _get_station_GeoDF():
-
-    geometry = [Point(xy) for xy in zip(_stations.lat, _stations.lon)]
+    geometry = [Point(xy) for xy in zip(_stations.lon, _stations.lat)]
     return gpd.GeoDataFrame(_stations, crs="EPSG:4326", geometry=geometry)
 
 
@@ -184,3 +181,86 @@ def get_dist(start_id, end_id):
 
 def get_triptime(starttime: np.datetime64, endtime: np.datetime64):
     return endtime - starttime
+
+
+def saves_to_parquet(path, df):
+    df = return_trip_datatable()
+    df.to_parquet(path, compression="gzip")
+
+
+def read_stored_trips(path="../data/interim/comb_trips.gzip"):
+    return pd.read_parquet(path)
+
+
+@jit
+def _sort_stations(st:int, end:int)->int:
+    a, b = sorted([st, end])
+    return int(str(a) + str(b))
+
+
+@jit
+def _sort_stations_dataframe(starray:np.ndarray, endarray:np.ndarray, ind:int)->int:
+    st = starray[ind]
+    end = endarray[ind]
+    return _sort_stations(st, end)
+
+
+@jit
+def _generat_st_end_lists(indicies):
+    stlist = [int(str(item)[0:5]) for item in indicies]
+    endlist = [int(str(item)[5:10]) for item in indicies]
+    return stlist, endlist
+
+
+def create_popularity_table(df):
+    # remove trips with missing data
+    total = len(df)
+    df = df.dropna()
+    total_nonna = len(df)
+    print(
+        f"{total_nonna} after removing trips with NA values \n {total-total_nonna} trips removed due to NA values"
+    )
+    # remove self-trips (starting and ending at same station)
+
+    df = df[df.start_station_id != df.end_station_id]
+    total_nonself = len(df)
+    print(
+        f"{total_nonself} trips starting and ending at the same station \n {total_nonna-total_nonself} trips were removed"
+    )
+
+    # remove trips with an invald start or end
+
+    df = df[df.start_station_id > 0]
+    df = df[df.end_station_id > 0]
+    total_mappable = len(df)
+    print(
+        f"{total_mappable} trips after removing trips with missing origin or destination \n {total_nonna-total_mappable} trips removed"
+    )
+
+    # load the stations
+    cabi_stations = "../data/processed/stationLookup.csv"
+    station_names_list = list(pd.read_csv(cabi_stations).short_name)
+
+    sample_df = df[["start_station_id", "end_station_id"]].reset_index()
+    stidlist = sample_df.start_station_id.to_numpy()
+    endidlist = sample_df.end_station_id.to_numpy()
+
+    sorter = lambda i: _sort_stations_dataframe(stidlist, endidlist, i)
+
+    popularity = sample_df.groupby(by=sorter).count()
+    new_pop = popularity.start_station_id
+    indicies = pd.DataFrame(new_pop).index.to_numpy()
+
+    stlist, endlist = _generat_st_end_lists(indicies)
+
+    pop_df = (
+        pd.DataFrame(new_pop)
+        .assign(st=stlist, en=endlist)
+        .reset_index(drop=True)
+        .rename(columns={"start_station_id": "popularity"})[["st", "en", "popularity"]]
+    )
+    pop_df.to_csv(
+        "../data/processed/connections_csv.csv",
+        columns=["st", "en", "popularity"],
+        index=False,
+    )

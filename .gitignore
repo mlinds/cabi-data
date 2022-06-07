@@ -148,3 +148,5 @@ notebooks/data_cleaning2.ipynb
 data/interim/comb_trips.gzip
 reports/figures/weekly_trips.png
 cabi/data/cache/*
+reports/figures/dcmap.jpg
+reports/figures/network.jpg

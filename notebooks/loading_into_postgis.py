@@ -1,34 +1,39 @@
 #%%
-from cabi import return_trip_datatable
+
 from sqlalchemy import create_engine
-from tqdm import tqdm
+
+from numpy_experiments import new_load_rides_np,filelist
+import pandas as pd
+import osmnx as onx
 
 # %%
 
-df = return_trip_datatable(r"../tripdata/")
-# %%
-# to ensure that this slow process doesn't get hung up
-# we are going to load in chunks and use the tqdm module to
-# create a status bar
+# setup a test array
 
-# create the chunks
-n = 200000  # chunk row size
-list_df = [df[i : i + n] for i in tqdm(range(0, df.shape[0], n))]
+
+ar = new_load_rides_np(filelist[-1])
+
+
+df = pd.DataFrame(ar)
+
 
 # create SQL alchemy database connection
-engine = create_engine("postgresql://postgres:password@127.0.0.1:5432/postgres")
 
-for chunk in tqdm(list_df):
-    chunk.to_sql(
-        "trips",
-        engine,
-        if_exists="append",
-    )
+engine = create_engine("postgresql://admin:maxpass@127.0.0.1:5432/pgrouting_data")
 
 # %%
 
-# put the stations in the database
-# stations = load_stations()
-# stations.to_postgis("stations", engine)
+df.to_sql(
 
-#%%
+    "trips",
+    engine,
+
+    if_exists="fail",
+)
+
+# %%
+cabi_stations = "https://raw.githubusercontent.com/mlinds/cabi-data/main/data/processed/stationLookup.csv"
+
+station_df = pd.read_csv(cabi_stations)
+
+station_df.to_sql('cabi_stations',engine,index=False)

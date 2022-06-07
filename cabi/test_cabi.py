@@ -1,6 +1,6 @@
 from operator import ge
 
-from cabi import cabi
+import cabi
 import pandas as pd
 import numpy as np
 import geopandas as gpd
@@ -43,4 +43,3 @@ def test_get_triptime():
     testdf = pd.DataFrame(testdata_trips)
     time = cabi.get_triptime(testdf.started_at, testdf.ended_at)
     # assert time.dtype is pd.Timedelta
-    
