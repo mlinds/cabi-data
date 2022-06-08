@@ -1,5 +1,4 @@
 # %%
-import trip_io
 import pandas as pd
 import numpy as np
 
@@ -52,7 +51,7 @@ def get_popularity(trips_df):
 
 
 def update_table():
-    trips_df = trip_io.read_stored_trips()
+    trips_df = pd.read_parquet("../data/interim/comb_trips.gzip")
     current_station_data = pd.read_csv(
         "../data/processed/stationLookup.csv", usecols=[0, 1, 2, 3]
     )
@@ -65,8 +64,18 @@ def update_table():
         popularity, how="left", left_on="short_name", right_on="station", validate="1:1"
     )
 
-    merged_df.to_csv("../data/processed/stationLookup.csv", index=False)
+    return merged_df.loc[:, ["short_name", "tripcount", "roundtrips"]]
+
+
+def write_stats():
+    df = update_table()
+    df.to_csv("../data/processed/station_stats.csv", index=False)
+    from sqlalchemy import create_engine
+
+    engine = create_engine("postgresql://admin:maxpass@127.0.0.1:5432/cabidb")
+    df.to_sql(name="station_info", con=engine, if_exists="replace")
+
 
 # %%
-if __name__ == '__main__':
-    update_table()
+if __name__ == "__main__":
+    write_stats()

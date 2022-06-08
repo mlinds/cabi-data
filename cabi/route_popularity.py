@@ -1,5 +1,8 @@
 import pandas as pd
 
+# TODO at time statistics from stats.ipynb
+# TODO after refining these functions, write one single script with an if__name... block that imports and calls the other functions
+
 def calculate_popularity():
     df = pd.read_parquet("../data/interim/comb_trips.gzip")
     total = len(df)
@@ -30,7 +33,7 @@ def update_popularity(update_csv=True,update_postgis=True):
     pop_df = calculate_popularity()
     if update_csv:
         pop_df.to_csv(
-            "../data/processed/connections_csv.csv",
+            "../data/processed/route_stats.csv",
             columns=["st", "en", "popularity"],
             index=False,
         )
@@ -38,7 +41,7 @@ def update_popularity(update_csv=True,update_postgis=True):
     if update_postgis:
         from sqlalchemy import create_engine
         engine = create_engine("postgresql://admin:maxpass@127.0.0.1:5432/cabidb")
-        pop_df.to_sql(name='station_popularity',con=engine,if_exists='replace')
+        pop_df.to_sql(name='route_stats',con=engine,if_exists='replace')
         print('Station popularity written to PostGIS table')
         
 if __name__ == '__main__':
