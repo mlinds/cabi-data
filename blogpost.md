@@ -20,11 +20,13 @@
 1. download the GeoFabrik files for Virginia Maryland, and DC
 2. Use OSMconvert to merge the files
 
+Depending on your linux system
+
 ```shell
 sudo apt install osmctools
 osmconvert VA.pbf --out-o5m -b=-77.3724,38.7685,-76.8474,39.1599 \
  | osmconvert - MD.pbf --out-o5m -b=-77.3724,38.7685,-76.8474,39.1599 \
- | osmconvert - DC.pbf --out-o5m -b=-77.3724,38.7685,-76.8474,39.599 -o=all_dc_area.pbf
+ | osmconvert - DC.pbf -b=-77.3724,38.7685,-76.8474,39.599 -o=all_dc_area.pbf
 ```
 3. Point the vahalla docker file to this directory
 4. On the first run, build the tiles. It will take a really long time depending on the area

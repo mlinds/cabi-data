@@ -1,6 +1,8 @@
 # %%
 import pandas as pd
 import numpy as np
+from sqlalchemy import create_engine
+
 
 # calculate the new statistics and check for new cabi stations
 
@@ -50,7 +52,7 @@ def get_popularity(trips_df):
     return count_by_station
 
 
-def update_table():
+def update_stations_stat_table():
     trips_df = pd.read_parquet("../data/interim/comb_trips.gzip")
     current_station_data = pd.read_csv(
         "../data/processed/stationLookup.csv", usecols=[0, 1, 2, 3]
@@ -68,12 +70,13 @@ def update_table():
 
 
 def write_stats():
-    df = update_table()
+    df = update_stations_stat_table()
     df.to_csv("../data/processed/station_stats.csv", index=False)
-    from sqlalchemy import create_engine
+    print("Stats per station written to CSV file")
 
     engine = create_engine("postgresql://admin:maxpass@127.0.0.1:5432/cabidb")
-    df.to_sql(name="station_info", con=engine, if_exists="replace")
+    df.to_sql(name="station_stats", con=engine, if_exists="replace")
+    print("Stats written to SQL database")
 
 
 # %%
