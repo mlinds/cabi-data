@@ -7,7 +7,7 @@ with jointtab as (
         pp.popularity as pop,
         topogeom
     from
-        station_popularity as pp
+        route_stats as pp
         -- get all routes we have both route statistics and the topogeo for
         inner join routes_topogeo as tp on pp.st = tp.st and pp.en = tp.en
 ),
@@ -29,7 +29,7 @@ statsums as (
 insert into
     cabi_network_stats(route_count, popularity, geom)
 select
-    countroutes,
+    trip_count,
     total_trips,
     geom
 from
