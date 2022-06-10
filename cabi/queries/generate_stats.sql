@@ -1,5 +1,4 @@
 truncate table cabi_network_stats;
-
 with jointtab as (
     select
         pp.st,

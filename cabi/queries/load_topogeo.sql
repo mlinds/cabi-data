@@ -2,8 +2,8 @@ analyze;
 
 with joinedtable as (
     select
-        station_routes.st,
-        station_routes.en,
+        route_geometry.st,
+        route_geometry.en,
         topogeom,
         geom,
         row_number() over (
@@ -11,9 +11,9 @@ with joinedtable as (
                 tripdist desc
         ) as rid
     from
-        station_routes
-        left join routes_topogeo on station_routes.st = routes_topogeo.st
-        and station_routes.en = routes_topogeo.en
+        route_geometry
+        left join routes_topogeo on route_geometry.st = routes_topogeo.st
+        and route_geometry.en = routes_topogeo.en
 ),
 -- get a table of rows that are in geometry but missing from topogeometry
 miss_top as (

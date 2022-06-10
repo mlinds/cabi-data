@@ -119,7 +119,6 @@ def calculate_popularity(df,maxtime_hours=6):
 def update_popularity(pop_df, update_csv=True, update_postgis=True):
     if not update_csv and not update_postgis:
         raise ValueError("need at least one")
-    print("Calculating route popularity")
     # pop_df = calculate_popularity()
     if update_csv:
         pop_df.to_csv(
