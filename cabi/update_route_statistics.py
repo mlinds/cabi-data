@@ -4,22 +4,27 @@ import numpy as np
 # TODO at time statistics from stats.ipynb
 # TODO after refining these functions, write one single script with an if__name... block that imports and calls the other functions
 
-
-def calculate_time_statistics(tripdata):
-    print("Starting calculation of time statistics")
+def _add_time_to_triptable(tripdata):
     # remove trips with 0 for start or end
     tripdata = tripdata.loc[
-        (tripdata.end_station_id != 0) & (tripdata.start_station_id != 0)
         # recalculate to consider time zones and just drop times we don't know
+     (tripdata.end_station_id != 0) & (tripdata.start_station_id != 0)
     ]
     tripdata=tripdata.assign(started_at=tripdata.started_at.dt.tz_localize('America/New_York',ambiguous='NaT'),ended_at=tripdata.ended_at.dt.tz_localize('America/New_York',ambiguous='NaT'))
     # add time in minutes
     triptimedf = tripdata.assign(
         triptime=(tripdata.ended_at - tripdata.started_at).dt.total_seconds() / 60
     )
+    return triptimedf
+
+
+def calculate_time_statistics(tripdata):
+    print("Starting calculation of time statistics")
+
+    tripdata=tripdata.loc[tripdata.triptime>0]
     # calculate summary stats
     time_summary = (
-        triptimedf.loc[:, ["start_station_id", "end_station_id", "triptime"]]
+        tripdata.loc[:, ["start_station_id", "end_station_id", "triptime"]]
         .groupby(["start_station_id", "end_station_id"])
         .agg(
             {"triptime": [np.mean, np.median, np.std, np.min, np.max, np.count_nonzero]}
@@ -32,12 +37,12 @@ def calculate_time_statistics(tripdata):
             columns={
                 "start_station_id": "st",
                 "end_station_id": "en",
-                "count_nonzero": "TripCount",
-                "mean": "meanTime_min",
-                "median": "medianTime_min",
-                "std": "timeStddev_min",
-                "amin": "timeMin_min",
-                "amax": "timeMax_min",
+                "count_nonzero": "tripcount",
+                "mean": "meantime",
+                "median": "medianime",
+                "std": "timestddev",
+                "amin": "timemin",
+                "amax": "timemax",
             }
         )
     )
@@ -65,10 +70,13 @@ def update_time_stats(procssed_time_stats, update_csv=True, update_postgis=True)
         print("Time statistics written to PostGIS table")
 
 
-def calculate_popularity(df):
+def calculate_popularity(df,maxtime_hours=6):
     print("Calculating route popularity statistics")
     total = len(df)
     print(f"{total:,} CaBi trips were found up to {df.ended_at.max()}")
+
+    df = df.loc[df.triptime<maxtime_hours*60]
+    print(f'{len(df)} trips after removing trips that are too long')
     # get the raw value counts
     vc = (
         df[["start_station_id", "end_station_id"]]
@@ -130,9 +138,10 @@ def update_popularity(pop_df, update_csv=True, update_postgis=True):
 
 def main():
     alltrips = pd.read_parquet("../data/interim/comb_trips.gzip")
-    timedf = calculate_time_statistics(alltrips)
+    trips_times = _add_time_to_triptable(alltrips)
+    pop_df = calculate_popularity(trips_times)
+    timedf = calculate_time_statistics(trips_times)
     update_time_stats(timedf)
-    pop_df = calculate_popularity(alltrips)
     update_popularity(pop_df)
 
 
