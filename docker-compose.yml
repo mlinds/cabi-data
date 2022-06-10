@@ -26,6 +26,9 @@ services:
       - "8080:80"
     volumes:
       - pgadmin-data:/var/lib/pgadmin
+
+# this container will not host the actual routing server, only check if the PBF is changed and rebuild the tiles if needed.
+# Routing is done locally with the valhalla binaries in pyvalhalla which is much faster than sending requests over HTTP
   valhalla:
     container_name: valhalla_routing_container
     image: gisops/valhalla:latest
@@ -39,7 +42,7 @@ services:
       - min_x=-77.43373
       - max_y=39.14923
       - build_elevation=True
-      - use_tiles_ignore_pbf=True
+      - serve_tiles=False
 volumes:
   db-data:
   pgadmin-data:
