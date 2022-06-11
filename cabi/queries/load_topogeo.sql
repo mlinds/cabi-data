@@ -6,7 +6,7 @@ with joinedtable as
              topogeom,
              geom,
              row_number() over (
-                                order by tripdist desc ) as rid
+                                order by geom desc ) as rid
      from route_geometry
      left join routes_topogeo on route_geometry.st = routes_topogeo.st
      and route_geometry.en = routes_topogeo.en), -- get a table of rows that are in geometry but missing from topogeometry
