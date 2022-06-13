@@ -6,9 +6,9 @@
 
 [Interactive leaflet map](https://mlinds.github.io/cabi-data/leafletmap.html)
 
-## March 2022 trip visualization
+## Trips map
 
-[Interactive 3D View of March 2022 trips](https://mlinds.github.io/cabi-data/reports/march_arcs.html)
+[This interactive map shows the number of trips on each street](https://mlinds.github.io/cabi-data/outputs/route_popularity_webmap/index.html)
 
 This shows only the most popular 500 station pairs for the month.
 

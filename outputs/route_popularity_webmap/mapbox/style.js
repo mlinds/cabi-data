@@ -9,7 +9,7 @@ var styleJSON = {
     "sources": {
         "DarkMatter_0": {
             "type": "raster",
-            "tiles": ["http://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png"],
+            "tiles": ["https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png"],
             "tileSize": 256
         },
         "cabi_network_stats_1": {
