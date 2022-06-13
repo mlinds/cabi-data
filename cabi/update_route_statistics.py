@@ -70,13 +70,13 @@ def update_time_stats(procssed_time_stats, update_csv=True, update_postgis=True)
         print("Time statistics written to PostGIS table")
 
 
-def calculate_popularity(df,maxtime_hours=6):
+def calculate_popularity(df,maxtime_hours=4):
     print("Calculating route popularity statistics")
     total = len(df)
     print(f"{total:,} CaBi trips were found up to {df.ended_at.max()}")
 
     df = df.loc[df.triptime<maxtime_hours*60]
-    print(f'{len(df)} trips after removing trips that are too long')
+    print(f'{len(df):,} trips after removing trips that are too long')
     # get the raw value counts
     vc = (
         df[["start_station_id", "end_station_id"]]
