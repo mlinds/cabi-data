@@ -10,8 +10,6 @@
 
 [This interactive map shows the number of trips on each street](https://mlinds.github.io/cabi-data/outputs/route_popularity_webmap/index.html)
 
-This shows only the most popular 500 station pairs for the month.
-
 ## Credits
 
 The following packages/maps/resources were used (in addition to the standard Python data stack):

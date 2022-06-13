@@ -47,12 +47,6 @@ var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
 map.on('click', 'lyr_cabi_network_stats_1_0', function (e) {
     var description = '<table>\
                     <tr>\
-                        <td colspan="2">' + (e.features[0].properties['id'] !== null ? autolinker.link(e.features[0].properties['id'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (e.features[0].properties['route_count'] !== null ? autolinker.link(e.features[0].properties['route_count'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
                         <td colspan="2"><strong>Number of trips</strong><br />' + (e.features[0].properties['popularity'] !== null ? autolinker.link(e.features[0].properties['popularity'].toLocaleString()) : '') + '</td>\
                     </tr>\
                 </table>'
