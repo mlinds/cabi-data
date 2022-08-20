@@ -7,6 +7,7 @@ import pandas as pd
 
 from tqdm import tqdm
 from shapely.geometry import LineString, Point
+from glob import glob
 
 ride_dtypes = {
     "started_at": "str",
@@ -103,11 +104,11 @@ def return_trip_datatable(datafolder="../data/tripdata/"):
     datafolder: pathlike: location of the CSVs of all the cabi trips you are interested in
     """
 
-    data_files = [datafolder + filename for filename in listdir(datafolder)]
+    data_files = [filename for filename in glob(datafolder+'*.csv')]
     dflist = [_load_file(pathname) for pathname in tqdm(data_files)]
 
     df = pd.concat(dflist)
-    # clean up names
+    # clean up names and datatypes
     df["member_casual"] = df["member_casual"].str.lower()
     df["member_casual"] = df["member_casual"].astype("category")
-    return
+    return df
