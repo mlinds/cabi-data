@@ -5,7 +5,7 @@ services:
     image: postgis/postgis
     restart: always
     environment:
-      POSTGRES_DB: pgrouting_data
+      POSTGRES_DB: cabidb
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: maxpass
       PGDATA: /var/lib/postgresql/data
@@ -16,7 +16,7 @@ services:
 
   pgadmin:
     container_name: pgadmin4_container
-    image: dpage/pgadmin4:5.5
+    image: dpage/pgadmin4:6.19
     restart: always
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
@@ -37,10 +37,10 @@ services:
     volumes:
       - ./data/osm_data/:/custom_files
     environment:
-      - max_x=-76.79742
-      - min_y=38.76640
-      - min_x=-77.43373
-      - max_y=39.14923
+      - max_x=-76.8
+      - min_y=38.7
+      - min_x=-77.4
+      - max_y=39.2
       - build_elevation=True
       - serve_tiles=False
 volumes:
