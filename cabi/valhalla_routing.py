@@ -86,7 +86,7 @@ def get_route_geometry(starty, startx, endy, endx):
         endy (float): ending latirude
 
     Returns:
-        LineString: Shapeley linestring of the assumed route
+        LineString: Shapely linestring of the assumed route
     """
     # set up the routing parameters
     requeststring = {
@@ -108,7 +108,9 @@ def get_route_geometry(starty, startx, endy, endx):
         response = actor.route(requeststring)
         # return response
         polyline_enc = response["trip"]["legs"][0]["shape"]
+        # convert the encoded polyline into a format readable by shapely
         polyline_dec = decode_polyline(polyline_enc)
+        # grab time and length from the Valhalla response
         time = response["trip"]["legs"][0]["summary"]["time"]
         length = response["trip"]["legs"][0]["summary"]["length"]
         # print(f'routed {(startx, starty, endx, endy)} sucessfully')
