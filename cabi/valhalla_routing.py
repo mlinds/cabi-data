@@ -31,6 +31,7 @@ def combine_trips_with_geom():
     )
     # get a list of the stations we already have in the PostGIS db
     existing_routes_df = pd.read_sql_query("select st,en from route_geometry", engine)
+
     station_combo_list = (
         existing_routes_df.st.astype("str") + existing_routes_df.en.astype("str")
     ).astype("int64")
@@ -44,10 +45,14 @@ def combine_trips_with_geom():
         .isin(list(station_combo_list))
     ]
 
+    # catch the case where there is nothing new
     if len(new_pairs) == 0:
         print("No new station combos were found")
         return
+
+    # if there is something new, print to the console
     print(len(new_pairs), "New station combinations were found in the data.")
+
     # combine the stations and the route popularity, and make them into tuples of the latlongs
     mergedf = (
         new_pairs.merge(
@@ -106,6 +111,7 @@ def get_route_geometry(starty, startx, endy, endx):
         polyline_dec = decode_polyline(polyline_enc)
         time = response["trip"]["legs"][0]["summary"]["time"]
         length = response["trip"]["legs"][0]["summary"]["length"]
+        # print(f'routed {(startx, starty, endx, endy)} sucessfully')
         return LineString(polyline_dec), time, length
     except RuntimeError:
         print(f"{(startx, starty, endx, endy)} could not be routed")
@@ -115,7 +121,8 @@ def get_route_geometry(starty, startx, endy, endx):
 # %%
 def main():
     mergedf = combine_trips_with_geom()
-
+    
+    # this is rather arbitrarily done in 200 chunks
     for chunk in tqdm(array_split(mergedf, 200)):
         geomlist = []
         timelist = []
