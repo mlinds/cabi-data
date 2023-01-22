@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 
-# TODO at time statistics from stats.ipynb
 # TODO after refining these functions, write one single script with an if__name... block that imports and calls the other functions
 
 def _add_time_to_triptable(tripdata):
@@ -91,7 +90,7 @@ def calculate_popularity(df,maxtime_hours=4):
     print(
         f"{len(vc):,} unique pairs after removing trips starting and ending at same dock"
     )
-    # drop trips with zero
+    # drop trips with zero as a start or end station
     vc = vc[~(vc.start_station_id == 0)]
     vc = vc[~(vc.end_station_id == 0)]
     print(f"{len(vc):,} unique pairs after removing invalid trips")
@@ -132,7 +131,7 @@ def update_popularity(pop_df, update_csv=True, update_postgis=True):
 
         engine = create_engine("postgresql://admin:maxpass@127.0.0.1:5432/cabidb")
         pop_df.to_sql(name="route_stats", con=engine, if_exists="replace")
-        print("Station popularity written to PostGIS table")
+        print("Route popularity written to PostGIS table")
 
 
 def main():
