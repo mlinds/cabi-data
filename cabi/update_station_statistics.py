@@ -60,7 +60,18 @@ def update_stations_stat_table():
     # check that there are not any trips to stations we don't know about
     all_unique_stations = find_unique_stations(trips_df)
 
-    # TODO find a way to see if there are any trips here that aren't in station data table
+    # get a list of stations we dont know about
+    # ie stations in the table of all unique stations that are not in the current station data dataframe
+    unknown_stations = all_unique_stations[~np.isin(all_unique_stations,current_station_data.short_name)]
+
+    # zero will always appear so yeet it
+    unknown_stations = unknown_stations[unknown_stations != 0]
+
+    # any remaining unknown stations are a problem, so take a note of that
+    if len(unknown_stations) > 0:
+        print(unknown_stations)
+        raise KeyError('Some new CaBi stations were found, add them to the station data before continuing') 
+
     popularity = get_popularity(trips_df)
     merged_df = current_station_data.merge(
         popularity, how="left", left_on="short_name", right_on="station", validate="1:1"
@@ -78,6 +89,8 @@ def write_stats():
     df.to_sql(name="station_stats", con=engine, if_exists="replace")
     print("Stats written to SQL database")
 
+
+# %%
 
 # %%
 if __name__ == "__main__":
