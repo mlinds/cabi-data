@@ -13,11 +13,19 @@ from valhalla.utils import decode_polyline
 import sys
 import warnings
 
-sys.warnoptions = "ignore"
-engine = create_engine("postgresql://admin:maxpass@127.0.0.1:5432/cabidb")
-warnings.simplefilter("ignore")
-#%%
+# setup the default database parameters
+DATABASE_NAME = 'cabi_test_db'
+USERNAME = 'admin'
+PASSWORD = 'maxpass'
 
+# create a postgis database connection
+engine = create_engine(f"postgresql://{USERNAME}:{PASSWORD}@127.0.0.1:5432/{DATABASE_NAME}")
+
+# ignore annoying warnings
+sys.warnoptions = "ignore"
+warnings.simplefilter("ignore")
+
+# Load the Valhalla configuration
 config = get_config("../data/osm_data/valhalla_tiles.tar", verbose=False)
 actor = Actor(config)
 
