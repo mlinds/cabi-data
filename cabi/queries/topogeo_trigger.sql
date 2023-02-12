@@ -11,7 +11,7 @@ begin
             insert into routes_topogeo(st, en, topogeom)
             select NEW.st,
                 NEW.en,
-                toTopoGeom(NEW.geom, 'cabi_topo2', 1, 0.1);
+                toTopoGeom(NEW.geom, 'cabi_topo', 1, 0.1);
         END IF;
 	return NULL;
 end;
