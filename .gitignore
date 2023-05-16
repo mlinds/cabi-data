@@ -4,6 +4,9 @@ data/osm_data/*
 .vscode/*
 *.gpkg
 
+*.qmd
+*.qgz
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
