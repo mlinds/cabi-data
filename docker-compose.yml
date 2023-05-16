@@ -31,7 +31,7 @@ services:
 # Routing is done locally with the valhalla binaries in pyvalhalla which is much faster than sending requests over HTTP
   valhalla:
     container_name: valhalla_routing_container
-    image: gisops/valhalla:latest
+    image: gisops/valhalla:3.3.0
     ports:
       - "8002:8002"
     volumes:
