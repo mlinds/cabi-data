@@ -32,3 +32,11 @@ create table routes_topogeo
 	en integer
 );
 select AddTopoGeometryColumn('cabi_topo', 'public', 'routes_topogeo', 'topogeom', 'LINE');
+create table cabi_network_stats
+(
+	fid serial primary key,
+	route_count integer,
+	popularity integer,
+    geom geometry(LineString,26985)
+
+);
