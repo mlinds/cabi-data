@@ -9,7 +9,9 @@ from shapely.geometry import LineString
 import numpy as np
 from valhalla import Actor, get_config, get_help
 from valhalla.utils import decode_polyline
+from logzero import logger
 
+import time
 import sys
 import warnings
 
@@ -31,6 +33,14 @@ actor = Actor(config)
 
 
 def combine_trips_with_geom():
+    """
+    This function combines trip information and station information to return a merged dataframe with columns for
+    start and end latitudes, start and end longitudes, and the popularity of the trip.
+    
+    Returns:
+        mergedf (pd.DataFrame): a dataframe with columns for start and end latitudes, start and end longitudes, and 
+        the popularity of the trip
+    """
     # load the dataframe of route popularity
     pairs = pd.read_csv("../data/processed/route_stats.csv")
     # load the stations
@@ -55,11 +65,11 @@ def combine_trips_with_geom():
 
     # catch the case where there is nothing new
     if len(new_pairs) == 0:
-        print("No new station combos were found")
+        logger.info("No new station combos were found")
         return
 
     # if there is something new, print to the console
-    print(len(new_pairs), "New station combinations were found in the data.")
+    logger.info(f"{len(new_pairs)} New station combinations were found in the data. They will be added to the routes table")
 
     # combine the stations and the route popularity, and make them into tuples of the latlongs
     mergedf = (
@@ -79,22 +89,21 @@ def combine_trips_with_geom():
 
     return mergedf
 
-
-#%%
-
-
-# tool that queries the running instance of valhalla
-def get_route_geometry(starty, startx, endy, endx):
+def get_route_geometry(starty, startx, endy, endx, use_roads=0.1, use_hills=0.1):
     """Find a route in DC using valhalla
 
     Args:
         startx (float): starting longitude
         starty (float): starting latitude
         endx (float): ending longitude
-        endy (float): ending latirude
+        endy (float): ending latitude
+        use_roads (float, optional): factor for how much road is allowed in the route. Defaults to 0.1.
+        use_hills (float, optional): factor for how much hills are allowed in the route. Defaults to 0.1.
 
     Returns:
         LineString: Shapely linestring of the assumed route
+        float: Time taken to complete the route
+        float: Length of the route
     """
     # set up the routing parameters
     requeststring = {
@@ -103,47 +112,63 @@ def get_route_geometry(starty, startx, endy, endx):
         "costing_options": {
             "bicycle": {
                 "bicycle_type": "hybrid",
-                "use_roads": 0.1,
-                "use_hills": 0.1,
+                "use_roads": use_roads,
+                "use_hills": use_hills,
                 "use_ferry": 0,
             }
         },
         "directions_type": "none",
     }
-    # print(requeststring)
     # attempt routing and give a NaN if there is an issue
     try:
         response = actor.route(requeststring)
-        # return response
-        polyline_enc = response["trip"]["legs"][0]["shape"]
         # convert the encoded polyline into a format readable by shapely
-        polyline_dec = decode_polyline(polyline_enc)
-        # grab time and length from the Valhalla response
-        time = response["trip"]["legs"][0]["summary"]["time"]
-        length = response["trip"]["legs"][0]["summary"]["length"]
-        # print(f'routed {(startx, starty, endx, endy)} sucessfully')
-        return LineString(polyline_dec), time, length
+        route_linestring, time, distance = process_routing_response(response)
+        return route_linestring,time,distance
     except RuntimeError:
-        print(f"{(startx, starty, endx, endy)} could not be routed")
         return np.NaN, np.NaN, np.NaN
 
 
-# %%
-def main():
-    mergedf = combine_trips_with_geom()
-    
-    # this is rather arbitrarily done in 200 chunks
-    for chunk in tqdm(array_split(mergedf, 200)):
-        geomlist = []
-        timelist = []
-        distlist = []
-        for starty, startx, endy, endx in chunk.iloc[:, 3:].values:
-            geometry, time, distance = get_route_geometry(starty, startx, endy, endx)
-            geomlist.append(geometry)
-            timelist.append(time)
-            distlist.append(distance)
-        # load the chunk into a gdf and write to the postgis database
-        gpd.GeoDataFrame(chunk).drop(
+def process_routing_response(response):
+    """Extract data from the routing response
+
+    Args:
+        response (dict): The routing response from the valhalla API
+
+    Returns:
+        LineString: Shapely linestring of the assumed route
+        time (int): Time required to traverse the route
+        length (int): Length of the route in meters
+    """
+    # Extract the encoded polyline string from the response
+    polyline_enc = response["trip"]["legs"][0]["shape"]
+    # Decode the encoded polyline into a format readable by shapely
+    polyline_dec = decode_polyline(polyline_enc)
+    # Extract the time required to traverse the route from the response
+    triptime = response["trip"]["legs"][0]["summary"]["time"]
+    # Extract the length of the route in meters from the response
+    length = response["trip"]["legs"][0]["summary"]["length"]
+    # Return the decoded polyline as a shapely linestring, the time and the length
+    return LineString(polyline_dec), triptime, length
+
+
+def insert_into_postgis(df_chunk):
+    chunklen = len(df_chunk)
+    tqdm.write(f'routing chunk of length {chunklen}')
+    geomlist = []
+    timelist = []
+    distlist = []
+    starttime = time.perf_counter()
+    for starty, startx, endy, endx in df_chunk.iloc[:, 3:].values:
+        geometry, triptime, distance = get_route_geometry(starty, startx, endy, endx)
+        geomlist.append(geometry)
+        timelist.append(triptime)
+        distlist.append(distance)
+    t_after_routing = time.perf_counter()
+    routing_time = t_after_routing - starttime
+    tqdm.write(f"Routed {chunklen} trips in {routing_time:.2f} seconds ({routing_time/chunklen:.3f} s/trip)")
+    sql_insert_chunksize = 100
+    gpd.GeoDataFrame(df_chunk).drop(
             columns=["start_lat", "start_long", "end_lat", "end_long", "popularity"]
         ).assign(
             triptime=timelist, tripdist=distlist, geom=geomlist
@@ -152,8 +177,22 @@ def main():
         ).to_crs(
             "EPSG:26985"
         ).to_postgis(
-            "route_geometry", con=engine, if_exists="append", index=False
+            "route_geometry", con=engine, if_exists="append", index=False,chunksize=sql_insert_chunksize
         )
+    t_after_insert = time.perf_counter()
+    inserttime = t_after_insert-t_after_routing
+    tqdm.write(f'Sucessfully loaded trips into PostGIS in {inserttime:.2f} seconds in subbatches of {sql_insert_chunksize} rows ({inserttime/chunklen:.3f} s/trip)')
+
+def split_dataframe(df,chunk_size):
+    return [df[i:i+chunk_size] for i in range(0, len(df), chunk_size)]
+
+
+def main():
+    mergedf = combine_trips_with_geom()
+    
+    # this is rather arbitrarily done in 200 chunks
+    for chunk in tqdm(split_dataframe(mergedf, 500)):
+        insert_into_postgis(chunk)
 
 
 # %%
