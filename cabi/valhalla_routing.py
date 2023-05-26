@@ -16,7 +16,7 @@ import sys
 import warnings
 
 # setup the default database parameters
-DATABASE_NAME = 'cabi_test_db'
+DATABASE_NAME = 'cabidb'
 USERNAME = 'admin'
 PASSWORD = 'maxpass'
 
