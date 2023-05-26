@@ -8,8 +8,6 @@ def update_parquet():
     tripdf.to_parquet(parquetpath, compression="gzip")
     print(f"{len(tripdf):,} trips were written to Parquet file {parquetpath}")
 
-
-"../data/processed/stationLookup.csv"
 #%%
 
 #%%
