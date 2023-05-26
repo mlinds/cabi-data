@@ -28,7 +28,7 @@ sys.warnoptions = "ignore"
 warnings.simplefilter("ignore")
 
 # Load the Valhalla configuration
-config = get_config("../data/osm_data/valhalla_tiles.tar", verbose=False)
+config = get_config("./data/osm_data/valhalla_tiles.tar", verbose=False)
 actor = Actor(config)
 
 
@@ -42,10 +42,10 @@ def combine_trips_with_geom():
         the popularity of the trip
     """
     # load the dataframe of route popularity
-    pairs = pd.read_csv("../data/processed/route_stats.csv")
+    pairs = pd.read_csv("./data/processed/route_stats.csv")
     # load the stations
     stations = pd.read_csv(
-        "../data/processed/stationLookup.csv", index_col="short_name"
+        "./data/processed/stationLookup.csv", index_col="short_name"
     )
     # get a list of the stations we already have in the PostGIS db
     existing_routes_df = pd.read_sql_query("select st,en from route_geometry", engine)

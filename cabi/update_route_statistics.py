@@ -54,7 +54,7 @@ def update_time_stats(procssed_time_stats, update_csv=True, update_postgis=True)
 
     if update_csv:
         procssed_time_stats.to_csv(
-            "../data/processed/bidirectional_stats.csv",
+            "./data/processed/bidirectional_stats.csv",
             # columns=["st", "en", "popularity"],
             index=False,
         )
@@ -121,7 +121,7 @@ def update_popularity(pop_df, update_csv=True, update_postgis=True):
     # pop_df = calculate_popularity()
     if update_csv:
         pop_df.to_csv(
-            "../data/processed/route_stats.csv",
+            "./data/processed/route_stats.csv",
             columns=["st", "en", "popularity"],
             index=False,
         )
@@ -135,7 +135,7 @@ def update_popularity(pop_df, update_csv=True, update_postgis=True):
 
 
 def main():
-    alltrips = pd.read_parquet("../data/interim/comb_trips.gzip")
+    alltrips = pd.read_parquet("./data/interim/comb_trips.gzip")
     trips_times = _add_time_to_triptable(alltrips)
     pop_df = calculate_popularity(trips_times)
     timedf = calculate_time_statistics(trips_times)

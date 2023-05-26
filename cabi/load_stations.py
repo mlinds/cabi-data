@@ -8,7 +8,7 @@ def main():
     # establish the database connection
     engine = create_engine("postgresql://admin:maxpass@127.0.0.1:5432/cabidb")
     # load the dataframe of cabi stations=
-    cabi_stations = pd.read_csv('../data/processed/stationLookup.csv',index_col=0)
+    cabi_stations = pd.read_csv('./data/processed/stationLookup.csv',index_col=0)
     # create a geopandas geometry object
     point_geom = gpd.points_from_xy(x=cabi_stations.lon,y=cabi_stations.lat,crs='EPSG:4326')
     # create a geodataframe

@@ -53,9 +53,9 @@ def get_popularity(trips_df):
 
 
 def update_stations_stat_table():
-    trips_df = pd.read_parquet("../data/interim/comb_trips.gzip")
+    trips_df = pd.read_parquet("./data/interim/comb_trips.gzip")
     current_station_data = pd.read_csv(
-        "../data/processed/stationLookup.csv", usecols=[0, 1, 2, 3]
+        "./data/processed/stationLookup.csv", usecols=[0, 1, 2, 3]
     )
     # check that there are not any trips to stations we don't know about
     all_unique_stations = find_unique_stations(trips_df)
@@ -82,7 +82,7 @@ def update_stations_stat_table():
 
 def write_stats():
     df = update_stations_stat_table()
-    df.to_csv("../data/processed/station_stats.csv", index=False)
+    df.to_csv("./data/processed/station_stats.csv", index=False)
     print("Stats per station written to CSV file")
 
     engine = create_engine("postgresql://admin:maxpass@127.0.0.1:5432/cabidb")

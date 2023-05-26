@@ -96,7 +96,7 @@ def _load_file(filename: str):
         return _load_new_style(filename)
 
 
-def return_trip_datatable(datafolder="../data/tripdata/"):
+def return_trip_datatable(datafolder="./data/tripdata/"):
     """
     Reads CSV files and returns a DataFrame of the trips.
 
