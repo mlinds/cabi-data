@@ -29,8 +29,6 @@ These are the basic steps to recreate the analysis:
 
 ## set up PostGIS 
 
-
-
 # the deets
 
 ## Using pandas to get route statistics
