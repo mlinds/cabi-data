@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 
-# TODO after refining these functions, write one single script with an if__name... block that imports and calls the other functions
 
 def _add_time_to_triptable(tripdata):
     # remove trips with 0 for start or end
@@ -88,12 +87,12 @@ def calculate_popularity(df,maxtime_hours=4):
     # drop selftrips
     vc = vc[~(vc.start_station_id == vc.end_station_id)]
     print(
-        f"{len(vc):,} unique pairs after removing trips starting and ending at same dock"
+        f"{len(vc):,} unique pairs after removing trips starting and ending at the same dock"
     )
-    # drop trips with zero as a start or end station
+    # drop trips with 0 as a start or end station
     vc = vc[~(vc.start_station_id == 0)]
     vc = vc[~(vc.end_station_id == 0)]
-    print(f"{len(vc):,} unique pairs after removing invalid trips")
+    print(f"{len(vc):,} unique pairs after removing trips missing valid start or end station")
     # create a new dataframe that combines trips from A to B with trips from B to A
     sorted_df = vc.apply(
         lambda x: sorted([x.start_station_id, x.end_station_id]),
