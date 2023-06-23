@@ -15,20 +15,6 @@ These are the basic steps to recreate the analysis:
 1. download the GeoFabrik files for Virginia Maryland, and DC
 2. Use OSMconvert to merge the files
 
-# temp outline
-
-## trip data and statistics
-
-### read csvs
-
-### get bidirectional time stats
-
-### 
-
-### get unique route counts
-
-## set up PostGIS 
-
 # the deets
 
 ## Using pandas to get route statistics
