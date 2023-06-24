@@ -154,7 +154,7 @@ def process_routing_response(response):
 
 def insert_into_postgis(df_chunk):
     chunklen = len(df_chunk)
-    tqdm.write(f'routing chunk of length {chunklen}')
+    tqdm.write(f'routing chunk {chunklen} trips')
     geomlist = []
     timelist = []
     distlist = []
