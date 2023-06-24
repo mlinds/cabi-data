@@ -189,6 +189,8 @@ def split_dataframe(df,chunk_size):
 
 def main():
     mergedf = combine_trips_with_geom()
+    if mergedf is None:
+        return 0
     
     # this is rather arbitrarily done in 200 chunks
     for chunk in tqdm(split_dataframe(mergedf, 500)):
