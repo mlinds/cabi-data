@@ -6,6 +6,7 @@ dependencies:
   - _libgcc_mutex=0.1=conda_forge
   - _openmp_mutex=4.5=2_gnu
   - abseil-cpp=20210324.2=h9c3ff4c_0
+  - affine=2.4.0=pyhd8ed1ab_0
   - alsa-lib=1.2.6.1=h7f98852_0
   - anyio=3.6.2=pyhd8ed1ab_0
   - argon2-cffi=21.3.0=pyhd8ed1ab_0
@@ -36,6 +37,7 @@ dependencies:
   - c-ares=1.18.1=h7f98852_0
   - ca-certificates=2023.5.7=hbcca054_0
   - cairo=1.16.0=ha61ee94_1011
+  - cartopy=0.20.2=py39h0ddd56c_4
   - certifi=2023.5.7=pyhd8ed1ab_0
   - cffi=1.15.0=py39h4bc2ebd_0
   - cfitsio=4.1.0=hd9d235c_0
@@ -47,6 +49,7 @@ dependencies:
   - comm=0.1.3=pyhd8ed1ab_0
   - conda=4.12.0=py39hf3d152e_0
   - conda-package-handling=1.8.1=py39hb9d737c_1
+  - contextily=1.3.0=pyhd8ed1ab_0
   - cryptography=37.0.2=py39hd97740a_0
   - curl=7.83.1=h7bff187_0
   - cycler=0.11.0=pyhd8ed1ab_0
@@ -74,8 +77,10 @@ dependencies:
   - freexl=1.0.6=h7f98852_0
   - gdal=3.5.0=py39hc691d54_2
   - geoalchemy2=0.13.3=pyhd8ed1ab_0
+  - geographiclib=1.52=pyhd8ed1ab_0
   - geopandas=0.10.2=pyhd8ed1ab_1
   - geopandas-base=0.10.2=pyha770c72_1
+  - geopy=2.3.0=pyhd8ed1ab_0
   - geos=3.10.2=h9c3ff4c_0
   - geotiff=1.7.1=h509b78c_1
   - gettext=0.19.8.1=h73d1719_1008
@@ -192,6 +197,7 @@ dependencies:
   - markupsafe=2.1.1=py39hb9d737c_1
   - matplotlib-base=3.5.2=py39h700656a_0
   - matplotlib-inline=0.1.6=pyhd8ed1ab_0
+  - mercantile=1.2.1=pyhd8ed1ab_0
   - mistune=2.0.5=pyhd8ed1ab_0
   - munch=2.5.0=py_0
   - munkres=1.1.4=pyh9f0ad1d_0
@@ -257,6 +263,7 @@ dependencies:
   - pyqt=5.15.7=py39h18e9c17_0
   - pyqt5-sip=12.11.0=py39h5a03fae_0
   - pyrsistent=0.19.3=py39h72bdee0_0
+  - pyshp=2.3.1=pyhd8ed1ab_0
   - pysocks=1.7.1=py39hf3d152e_5
   - python=3.9.13=h9a8a25e_0_cpython
   - python-dateutil=2.8.2=pyhd8ed1ab_0
@@ -270,6 +277,7 @@ dependencies:
   - qtconsole=5.4.3=pyhd8ed1ab_0
   - qtconsole-base=5.4.3=pyha770c72_0
   - qtpy=2.3.1=pyhd8ed1ab_0
+  - rasterio=1.2.10=py39h20899d1_6
   - re2=2022.04.01=h27087fc_0
   - readline=8.1=h46c0cb4_0
   - reproc=14.2.3=h7f98852_0
@@ -289,6 +297,7 @@ dependencies:
   - six=1.16.0=pyh6c4a22f_0
   - snappy=1.1.9=hbd366e4_1
   - sniffio=1.3.0=pyhd8ed1ab_0
+  - snuggs=1.4.7=py_0
   - soupsieve=2.3.2.post1=pyhd8ed1ab_0
   - sqlalchemy=1.4.37=py39hb9d737c_0
   - sqlite=3.38.5=h4ff8645_0
