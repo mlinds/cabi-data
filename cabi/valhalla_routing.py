@@ -154,7 +154,7 @@ def process_routing_response(response):
 
 def insert_into_postgis(df_chunk):
     chunklen = len(df_chunk)
-    tqdm.write(f'routing chunk of length {chunklen}')
+    tqdm.write(f'routing chunk {chunklen} trips')
     geomlist = []
     timelist = []
     distlist = []
@@ -189,6 +189,8 @@ def split_dataframe(df,chunk_size):
 
 def main():
     mergedf = combine_trips_with_geom()
+    if mergedf is None:
+        return 0
     
     # this is rather arbitrarily done in 200 chunks
     for chunk in tqdm(split_dataframe(mergedf, 500)):
