@@ -307,7 +307,6 @@ dist
 *.css
 *.htm
 *.html
-*.js
 *.jsp
 *.php
 *.rss
