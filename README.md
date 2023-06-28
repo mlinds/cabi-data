@@ -10,9 +10,3 @@
 
 [This interactive map shows the number of trips on each street](https://mlinds.github.io/cabi-data/outputs/route_popularity_webmap/index.html)
 
-## Credits
-
-The following packages/maps/resources were used (in addition to the standard Python data stack):
-- [leaflet-vega](https://github.com/nyurik/leaflet-vega)
-- [The beautiful Stamen Toner basemap](https://github.com/stamen/maps.stamen.com)
-- [Altair](https://github.com/altair-viz/altair)
